@@ -9,14 +9,14 @@ Rectangle {
 	Column {
     Text {
 
-        text: "page 1"
+        text: "page 2"
     }
 	Text {
 		background-color: yellow
 		text: "go back"
 		MouseArea {
 		anchors.fill: parent
-		onClicked: pageLoader.source = "https://raw.githubusercontent.com/androidarduino/Pages/master/qml/Page2.qml"
+		onClicked: pageLoader.source = "https://raw.githubusercontent.com/androidarduino/Pages/master/qml/Page1.qml"
 	}
 	}
 	}
