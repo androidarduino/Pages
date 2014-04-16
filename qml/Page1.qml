@@ -12,7 +12,8 @@ Rectangle {
 		text: "go back"
 		MouseArea {
 		anchors.fill: parent
-		onclicked: pageLoader.source = "qml/Arduino/main.qml"
+		onClicked: pageLoader.source = "qml/Arduino/main.qml"
+	}
 	}
 	}
 }
