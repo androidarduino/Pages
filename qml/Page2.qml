@@ -12,7 +12,6 @@ Rectangle {
         text: "page 2"
     }
 	Text {
-		background-color: yellow
 		text: "go back"
 		MouseArea {
 		anchors.fill: parent
