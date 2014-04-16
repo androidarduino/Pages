@@ -1,11 +1,11 @@
 import QtQuick 2.0
 
-    Loader { id: pageLoader }
 
 
 Rectangle {
     width: 100
     height: 62
+    Loader { id: pageLoader }
 	Column {
     Text {
 
