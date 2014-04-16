@@ -26,7 +26,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: pageLoader.source = "https://raw.githubusercontent.com/androidarduino/Pages/master/Page1.qml"
+        onClicked: pageLoader.source = "https://raw.githubusercontent.com/androidarduino/Pages/master/Pages/Page1.qml"
     }
 }
 
