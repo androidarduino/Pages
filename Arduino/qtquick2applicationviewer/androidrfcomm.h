@@ -94,6 +94,7 @@ public:
      */
     int available();
 
+    QString readAll();
     /**
      * Receive a number of bytes from the remote device.
      * In case of a timeout, this method returns the bytes that have been received so far.

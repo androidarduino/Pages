@@ -65,5 +65,10 @@ void BTQML::set_encoding(BTQML::ENCODING encoding)
 void BTQML::set_terminator(QString terminator)
 {
     rfcomm.setSendTerminator(terminator);
-    rfcomm.setReceiveTerminator(terminator);
+    //rfcomm.setReceiveTerminator(terminator);
+}
+
+QString BTQML::readAll()
+{
+    return rfcomm.readAll();
 }

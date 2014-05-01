@@ -41,13 +41,13 @@ Item {
         TextEdit {
             id: message
             width: 200
-            text: "255,0,255"
+            text: "2,0,255*"
         }
         Controls.Button {
             text: "Send"
-            onClicked: {btqml.send_line(message.text); received.text=btqml.receive_line();}
+            onClicked: {btqml.send_line(message.text); console.log(received.text = received.text + btqml.readAll());}
         }
-        TextEdit {
+        Text {
             id: received
             width: 200
         }

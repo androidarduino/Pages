@@ -25,6 +25,7 @@ public slots:
     QString receive_line();
     void connect(QString device_name);
     void disconnect();
+    QString readAll();
 protected:
     QVariant get_paired_devices();
     bool get_enabled();

@@ -148,18 +148,19 @@ void AndroidRfComm::connect(const QString& nameOrAddress) {
     socket=device.callObjectMethod("createRfcommSocketToServiceRecord","(Ljava/util/UUID;)Landroid/bluetooth/BluetoothSocket;",uuid.object<jobject>());
     check("UUID.createRfcommSocketToServiceRecord()",socket);
     socket.callMethod<void>("connect");
+    //TODO: insert try catch here, when connect failed, don't try to get streams
     check("BluetoothSocket.connect()");
-    jboolean connected=socket.callMethod<jboolean>("isConnected");
-    check("BluetoothSocket.isConnected()");
-    if (connected) {
+//    jboolean connected=socket.callMethod<jboolean>("isConnected");
+//    check("BluetoothSocket.isConnected()");
+    //if (connected) {
         istream=socket.callObjectMethod("getInputStream","()Ljava/io/InputStream;");
         check("BluetoothSocket.getInputStream()",istream);
         ostream=socket.callObjectMethod("getOutputStream","()Ljava/io/OutputStream;");
         check("BluetoothSocket.getOutputStream()",ostream);
-    }
-    else {
-        qCritical("Cannot connect to the bluetooth device");
-    }
+    //}
+    //else {
+    //    qCritical("Cannot connect to the bluetooth device");
+    //}
 }
 
 bool AndroidRfComm::isConnected() {
@@ -174,10 +175,10 @@ bool AndroidRfComm::isConnected() {
 }
 
 void AndroidRfComm::send(const QByteArray& data) {
-    if (!ostream.isValid()) {
-       qCritical("Cannot send, bluetooth socket is not connected");
-       return;
-    }
+    //if (!ostream.isValid()) {
+    //   qCritical("Cannot send, bluetooth socket is not connected");
+    //   return;
+    //}
     int size=data.length();
     const char* rawData=data.constData();
     qDebug("Sending %i bytes over bluetooth",size);
@@ -242,6 +243,13 @@ QByteArray AndroidRfComm::receive(const int maxNumOfBytes, const int waitMilliSe
     // Truncate the result and keep only the remainder in the buffer
     QByteArray result=buffer.left(maxNumOfBytes);
     buffer.remove(0,result.length());
+    return result;
+}
+
+QString AndroidRfComm::readAll()
+{
+    readIntoBuffer();
+    QString result(buffer);
     return result;
 }
 
