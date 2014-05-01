@@ -12,56 +12,44 @@ import QtQuick.Window 2.0 as Window
 import QtQuick.Dialogs 1.1 as Dialogs
 import QtQuick.Layouts 1.1 as Layouts
 import QtQuick.LocalStorage 2.0 as SQL
-import QtBluetooth 5.2 as Bluetooth
-import QtQuick.XmlListModel 2.0 as XML
+import BTQML 1.0
+
+//import QtBluetooth 5.2 as Bluetooth
+//import QtQuick.XmlListModel 2.0 as XML
 
 Item {
-    width: 200; height: 200
-
-    Text {
-        text: "test"
-    }
-
-    Loader { id: pageLoader }
-
-    MouseArea {
+    width: 400; height: 600
+    Column {
         anchors.fill: parent
-        onClicked: pageLoader.source = "https://raw.githubusercontent.com/androidarduino/Pages/master/qml/Page1.qml"
+        spacing: 10
+        BTQML {
+            id: btqml
+            terminator: "*"
+            //encoding: "Latin1"
+            //onReceivedLine: { console.log("Received: " + message); received.text = message }
+            //TODO: implement the receiving signal
+        }
+        Controls.ComboBox{
+            id: target_device
+            model: btqml.paired_devices
+            //model: ["abc","bcd", "efg"]
+        }
+        Controls.Button {
+            text: "Connect"
+            onClicked: btqml.connect(target_device.currentText)
+        }
+        TextEdit {
+            id: message
+            width: 200
+            text: "255,0,255"
+        }
+        Controls.Button {
+            text: "Send"
+            onClicked: {btqml.send_line(message.text); received.text=btqml.receive_line();}
+        }
+        TextEdit {
+            id: received
+            width: 200
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
