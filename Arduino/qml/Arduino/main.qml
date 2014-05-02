@@ -20,36 +20,51 @@ import BTQML 1.0
 Item {
     width: 400; height: 600
     Column {
+        id: column1
         anchors.fill: parent
-        spacing: 10
+        spacing: 32
         BTQML {
             id: btqml
-            terminator: "*"
+            send_terminator: "*"
+            receive_terminator: "\n"
             //encoding: "Latin1"
             //onReceivedLine: { console.log("Received: " + message); received.text = message }
             //TODO: implement the receiving signal
         }
         Controls.ComboBox{
             id: target_device
+            width: 200
+            height: 32
             model: btqml.paired_devices
             //model: ["abc","bcd", "efg"]
         }
         Controls.Button {
+            width: 200
+            height: 32
             text: "Connect"
             onClicked: btqml.connect(target_device.currentText)
         }
         TextEdit {
             id: message
-            width: 200
             text: "2,0,255*"
+            font.bold: true
+            horizontalAlignment: TextEdit.AlignLeft
+            font.pointSize: 12
         }
         Controls.Button {
+            width: 200
+            height: 32
             text: "Send"
             onClicked: {btqml.send_line(message.text); console.log(received.text = received.text + btqml.readAll());}
         }
         Text {
             id: received
             width: 200
+        }
+        Text {
+            id: msg
+            width: 200
+            text: btqml.received
         }
     }
 }

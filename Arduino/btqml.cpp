@@ -9,7 +9,9 @@ BTQML::BTQML(QQuickItem *parent) :
 
 QString BTQML::receive_line()
 {
-    return rfcomm.receiveLine(1000, 100);
+    QString line = rfcomm.receiveLine(1000, 10);
+    emit received_line(line);
+    return line;
 }
 
 void BTQML::send_line(QString line)
@@ -43,7 +45,7 @@ bool BTQML::get_enabled()
 QString BTQML::get_status()
 {
     if (m_device_name == "") return "No Device Set";
-    if (rfcomm.isConnected()) return "Connected";
+    if (rfcomm.m_connected) return "Connected";
     return "Not Connected";
 }
 
@@ -52,20 +54,29 @@ BTQML::ENCODING BTQML::get_encoding()
     return rfcomm.getLatin1Encoding() ? BTQML::Lating1 : BTQML::Utf8;
 }
 
-QString BTQML::get_terminator()
-{
-    return rfcomm.getSendTerminator();
-}
-
 void BTQML::set_encoding(BTQML::ENCODING encoding)
 {
     rfcomm.setLatin1Encoding(encoding == BTQML::Lating1);
 }
 
-void BTQML::set_terminator(QString terminator)
+QString BTQML::get_send_terminator()
+{
+    return rfcomm.getSendTerminator();
+}
+
+void BTQML::set_send_terminator(QString terminator)
 {
     rfcomm.setSendTerminator(terminator);
-    //rfcomm.setReceiveTerminator(terminator);
+}
+
+QString BTQML::get_receive_terminator()
+{
+    return rfcomm.getReceiveTerminator();
+}
+
+void BTQML::set_receive_terminator(QString terminator)
+{
+    rfcomm.setReceiveTerminator(terminator);
 }
 
 QString BTQML::readAll()

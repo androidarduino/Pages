@@ -14,12 +14,14 @@ class BTQML : public QQuickItem
     Q_PROPERTY(bool enabled READ get_enabled)
     Q_PROPERTY(QString status READ get_status)
     Q_PROPERTY(ENCODING encoding READ get_encoding WRITE set_encoding)
-    Q_PROPERTY(QString terminator READ get_terminator WRITE set_terminator)
+    Q_PROPERTY(QString send_terminator READ get_send_terminator WRITE set_send_terminator)
+    Q_PROPERTY(QString receive_terminator READ get_receive_terminator WRITE set_receive_terminator)
+    Q_PROPERTY(QString received READ receive_line NOTIFY received_line)
 public:
     explicit BTQML(QQuickItem *parent = 0);
 signals:
     void connected();
-    void receive_line(QString line);
+    void received_line(QString line);
 public slots:
     void send_line(QString line);
     QString receive_line();
@@ -31,9 +33,11 @@ protected:
     bool get_enabled();
     QString get_status();
     BTQML::ENCODING get_encoding();
-    QString get_terminator();
     void set_encoding(BTQML::ENCODING encoding);
-    void set_terminator(QString terminator);
+    QString get_send_terminator();
+    void set_send_terminator(QString terminator);
+    QString get_receive_terminator();
+    void set_receive_terminator(QString terminator);
 private:
     AndroidRfComm rfcomm;
     QString m_device_name;

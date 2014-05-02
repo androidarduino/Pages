@@ -41,6 +41,7 @@ public:
      * Constructor.
      */
     AndroidRfComm();
+    bool m_connected;
 
     /**
      * Destructor, disconnects if not already disconnected.
@@ -207,6 +208,7 @@ protected:
 
     /** Read up to 1kB of received raw data into the buffer */
     int readIntoBuffer();
+
 };
 
 #endif // ANDROIDRFCOMM_H

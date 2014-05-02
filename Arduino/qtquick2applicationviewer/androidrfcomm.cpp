@@ -19,6 +19,7 @@ AndroidRfComm::AndroidRfComm() {
 
     // Check if the adapter is enabled and eventually wait until it is ready to be used
     isEnabled();
+    m_connected = false;
 }
 
 AndroidRfComm::~AndroidRfComm() {
@@ -106,6 +107,9 @@ void AndroidRfComm::connect(const QString& nameOrAddress) {
         return;
     }
 
+    if (m_connected)
+        return;
+
     // Eventually cancel pending discovery because that conflicts with opening a device
     jboolean discovering=adapter.callMethod<jboolean>("isDiscovering");
     check("BluetoothDevice.isDiscovering()");
@@ -148,10 +152,10 @@ void AndroidRfComm::connect(const QString& nameOrAddress) {
     socket=device.callObjectMethod("createRfcommSocketToServiceRecord","(Ljava/util/UUID;)Landroid/bluetooth/BluetoothSocket;",uuid.object<jobject>());
     check("UUID.createRfcommSocketToServiceRecord()",socket);
     socket.callMethod<void>("connect");
-    //TODO: insert try catch here, when connect failed, don't try to get streams
     check("BluetoothSocket.connect()");
-//    jboolean connected=socket.callMethod<jboolean>("isConnected");
-//    check("BluetoothSocket.isConnected()");
+
+    //jboolean connected=socket.callMethod<jboolean>("isConnected");
+    //check("BluetoothSocket.isConnected()");
     //if (connected) {
         istream=socket.callObjectMethod("getInputStream","()Ljava/io/InputStream;");
         check("BluetoothSocket.getInputStream()",istream);
@@ -161,6 +165,7 @@ void AndroidRfComm::connect(const QString& nameOrAddress) {
     //else {
     //    qCritical("Cannot connect to the bluetooth device");
     //}
+    m_connected = true;
 }
 
 bool AndroidRfComm::isConnected() {
@@ -248,8 +253,11 @@ QByteArray AndroidRfComm::receive(const int maxNumOfBytes, const int waitMilliSe
 
 QString AndroidRfComm::readAll()
 {
-    readIntoBuffer();
+    //If there are available bytes to read, get them into buffer
+    if (available() > buffer.length())
+        readIntoBuffer();
     QString result(buffer);
+    buffer.clear();
     return result;
 }
 
