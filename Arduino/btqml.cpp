@@ -4,6 +4,9 @@
 BTQML::BTQML(QQuickItem *parent) :
     QQuickItem(parent)
 {
+    worker = new BtWorker(&rfcomm);
+    QObject::connect(worker, SIGNAL(messageArrived(QString)), this, SLOT(messageArrived(QString)));
+    QObject::connect(this, SIGNAL(connected()), worker, SLOT(poll_result()));
     qDebug("btqml class created");
 }
 
@@ -23,6 +26,7 @@ void BTQML::connect(QString device_name)
 {
     m_device_name = device_name;
     rfcomm.connect(device_name);
+    emit connected();
 }
 
 void BTQML::disconnect()
@@ -82,4 +86,42 @@ void BTQML::set_receive_terminator(QString terminator)
 QString BTQML::readAll()
 {
     return rfcomm.readAll();
+}
+
+void BTQML::messageArrived(QString message)
+{
+    qDebug()<<"Message Arrived: " + message;
+}
+
+BtWorker::BtWorker(AndroidRfComm* rc)
+{
+    this->rfcomm = rc;
+    moveToThread(&thread);
+    thread.start();
+    qDebug()<<"thread started for bt worker";
+}
+
+BtWorker::~BtWorker()
+{
+    qDebug()<<"closing thread for bt worker";
+    thread.quit();
+    qDebug()<<"waiting for thread to finish";
+    thread.wait();
+}
+
+void BtWorker::poll_result()
+{
+    //Poll the JNI API for received message, if encountered a message, emit a signal
+    QString result;
+    while(true) {
+        try {
+            result = rfcomm->receiveLine(256, 1000);
+        } catch (...)
+        {
+            continue;
+        }
+        if(result != "")
+            emit messageArrived(result);
+        qDebug()<<"get result: "<< result << ";";
+    }
 }

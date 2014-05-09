@@ -55,7 +55,7 @@ Item {
             width: 200
             height: 32
             text: "Send"
-            onClicked: {btqml.send_line(message.text); console.log(received.text = received.text + btqml.readAll());}
+            onClicked: {btqml.send_line(message.text);}
         }
         Text {
             id: received
@@ -64,7 +64,6 @@ Item {
         Text {
             id: msg
             width: 200
-            text: btqml.received
         }
     }
 }

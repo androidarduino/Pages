@@ -2,7 +2,27 @@
 #define BTQML_H
 
 #include <QQuickItem>
-#include "androidrfcomm.h"
+#include <QThread>
+#include "qtquick2applicationviewer/androidrfcomm.h"
+
+class BtWorker : public QObject
+{
+    Q_OBJECT
+public:
+    BtWorker();
+    ~BtWorker();
+public slots:
+    void poll_result();
+    void send_line(QString line);
+    void connect(Qstring device_name);
+    void get_paired_devices();
+signals:
+    void messageArrived(QString line);
+    void pairedDeviceArrived(QVariant devices);
+protected:
+    QThread thread;
+    AndroidRfComm rfcomm;
+};
 
 class BTQML : public QQuickItem
 {
@@ -28,8 +48,9 @@ public slots:
     void connect(QString device_name);
     void disconnect();
     QString readAll();
+    void messageArrived(QString message);
+    void get_paired_devices();
 protected:
-    QVariant get_paired_devices();
     bool get_enabled();
     QString get_status();
     BTQML::ENCODING get_encoding();
@@ -39,8 +60,8 @@ protected:
     QString get_receive_terminator();
     void set_receive_terminator(QString terminator);
 private:
-    AndroidRfComm rfcomm;
     QString m_device_name;
+    BtWorker* worker;
 };
 
 #endif // BTQML_H
